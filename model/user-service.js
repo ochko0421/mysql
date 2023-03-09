@@ -1,45 +1,50 @@
-const pool = require("../config/mysql_config.js")
+const pool = require("../config/mysql_config.js");
 
-export async function getProducts(limit, where) {
+exports.getUsers = async (limit) => {
+  try {
     if (limit) {
       const [rows] = await pool.query(
-        `SELECT productId FROM product limit ${limit} `
+        `SELECT * FROM user ORDER BY id DESC LIMIT  ${limit}`
       );
       return rows;
-    } 
-  }
-  export async function getProduct(id) {
-    const [row] = await pool.query(`SELECT * FROM product where productId=${id}`);
-    return row[0];
-  }
-  export async function createProduct(
-    productId,
-    productName,
-    productPrice,
-    productImage
-  ) {
-    //this question marks are similar with C language => printf('%d %d', x,y)
-    const [result] = await pool.query(
-      `INSERT INTO product VALUES (?, ?, ?, ?)`,
-      [productId,productName,productPrice,productImage]
-    );
-    return result;
-  }
-  export async function updateProduct(productId, updatedData) {
-    let [result] = "";
-    for (let i = 0; i < Object.keys(updatedData).length; i++) {
-      result = await pool.query(
-        `UPDATE product SET ${Object.keys(updatedData)[i]} ='${
-          Object.values(updatedData)[i]
-        }'  WHERE productId = ${productId}`
-      );
     }
-    return result;
+  } catch (err) {
+    console.log(err);
   }
-  export async function deleteProduct(productId) {
-    const [result] = await pool.query(
-      `DELETE FROM product WHERE productId='${productId}';`
+};
+exports.getOne = async (id) => {
+  try {
+    const [row] = await pool.query(`SELECT * FROM User where id = ${id}`);
+    return row[0];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.createUser = async (user) => {
+  const { name, age, username } = user;
+  //this question marks are similar with C language => printf('%d %d', x,y)
+  const [result] = await pool.query(
+    `INSERT INTO user VALUES (?, ?, ?, ?)`,
+    [ name, age, null,username]
+  );
+  return result;
+};
+exports.updateUser = async (id, updatedData) => {
+  console.log(updatedData);
+  let [result] = "";
+  for (let i = 0; i < Object.keys(updatedData).length; i++) {
+    result = await pool.query(
+      `UPDATE user SET ${Object.keys(updatedData)[i]} = '${
+        Object.values(updatedData)[i]
+      }' WHERE id = ${id}`
     );
-    return result;
   }
-  
+  return result;
+};
+exports.deleteUser = async (id) => {
+  const [result] = await pool.query(
+    `DELETE FROM User WHERE id= ${id}`
+  );
+  return result;
+};

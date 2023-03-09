@@ -1,0 +1,5 @@
+### 
+get http://localhost:9000/api/user?limit=1
+
+###
+get http://localhost:9000/api/user/id=1
